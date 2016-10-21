@@ -3,32 +3,34 @@ using System.Collections;
 
 public class SwipeFree : MonoBehaviour {
 
-	// Use this for initialization
+	GameObject go;
+	TapJump tapJump;
+
 	void Start () {
-		// do later if needed
+		go = GameObject.Find("Sphere"); 
+		tapJump = go.GetComponent<TapJump>();
 	}
 
 	public float minSwipeDist; 
-	public Vector2 swipeVector; 
+	public Vector2 swipeVector = Vector2.zero; 
 	private Vector2 startPos; 
 
 	// Update is called once per frame
 	void Update () 
 	{
 		
-		if (Input.touchCount > 0) 
+		if (Input.touchCount > 0 && !tapJump.isJumping ) // if we have had a touch and the skwerl is not jumping
 		{
 			Touch touch = Input.touches [0];
 		
 			switch (touch.phase) 
 			{
-
 			case TouchPhase.Began: 
 				startPos = touch.position; 
 				break; 
 			case TouchPhase.Ended:
 				Vector2 PlayerSwipe = new Vector2 ((touch.position.x - startPos.x), (touch.position.y - startPos.y));
-				float swipeDistance = PlayerSwipe.magnitude;
+				float swipeDistance = (PlayerSwipe.magnitude);
 
 				if (swipeDistance > minSwipeDist) { // if it meets the swipe distance that meets our threshold
 					
