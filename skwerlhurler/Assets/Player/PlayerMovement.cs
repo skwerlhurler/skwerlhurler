@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	public PlayerDirection direction {set;get;}
 	private Vector2 temp = Vector2.zero;
+	private Vector2 tempJump = Vector2.zero;
 	private Vector3 moveDir = Vector3.zero; 
 	private bool initJump = true;
 	GameObject go;
@@ -24,11 +25,13 @@ public class PlayerMovement : MonoBehaviour {
 		swipefree = go.GetComponent<SwipeFree>();
 		tapJump = GetComponent<TapJump> ();
 		direction = PlayerDirection.southeast; // initialize direction to southeast
+
 	}
 
 	public float decayConstant;
 	public float decayThreshold;
 	public float speed;
+	public float maxVector;
 	public float jumpHeight;
 	public float jumpDistance;
 	public float gravity;
@@ -46,6 +49,23 @@ public class PlayerMovement : MonoBehaviour {
 				
 				temp = swipefree.swipeVector;
 				moveDir = new Vector3 (temp.x, 0, temp.y);
+
+				// If over max vector, set to max vector (sets maximum input speed)
+				if (Mathf.Abs (moveDir.x) > maxVector) {
+					if (moveDir.x > 0) {
+						moveDir.x = maxVector;
+					} else {
+						moveDir.x = -1 * maxVector;
+					}
+				}
+				if (Mathf.Abs (moveDir.z) > maxVector) {
+					if (moveDir.z > 0) {
+						moveDir.z = maxVector;
+					} else {
+						moveDir.z = -1 * maxVector;
+					}
+				}
+
 				moveDir = Quaternion.Euler (0, 45, 0) * moveDir; 
 				moveDir *= speed;
 
@@ -53,71 +73,61 @@ public class PlayerMovement : MonoBehaviour {
 				if (Mathf.Abs (moveDir.x) >= Mathf.Abs (moveDir.z)) {
 					if (moveDir.x >= 0) {
 						direction = PlayerDirection.northeast;
-						print ("ne");
+						//print ("ne");
 					} else {
 						direction = PlayerDirection.southwest;
-						print ("sw");
+						//print ("sw");
 					}
 				} else {
 					if (moveDir.z >= 0) {
 						direction = PlayerDirection.northwest;
-						print ("nw");
+					//	print ("nw");
 					} else {
 						direction = PlayerDirection.southeast;
-						print ("se");
+						//print ("se");
 					}
 				}		
 			}
 		}
 
-		// Ground movement decay
+		// Ground movement decay (annoying and ugly)
 		if (tapJump.isJumping == false) {
 			if (Mathf.Abs (moveDir.x) > 0 || Mathf.Abs (moveDir.z) > 0) {
-				if (Mathf.Abs (moveDir.x / decayConstant) < decayThreshold) {
-					moveDir.x = 0; 
+				if (moveDir.x < -1 * decayThreshold) {
+					moveDir.x += decayConstant;
+				} else if (moveDir.x > decayThreshold) {
+					moveDir.x -= decayConstant;
+
 				} else {
-					moveDir.x = moveDir.x / decayConstant;
+					moveDir.x = 0;
 				} 
-				if (Mathf.Abs (moveDir.z / decayConstant) < decayThreshold) {
-					moveDir.z = 0; 
+				if (moveDir.z < -1 * decayThreshold) {
+					moveDir.z += decayConstant;
+				} else if (moveDir.z > decayThreshold) {
+					moveDir.z -= decayConstant;
+
 				} else {
-					moveDir.z = moveDir.z / decayConstant;
+					moveDir.z = 0;
 				} 
+
+				//print (moveDir.x + " " + moveDir.z);
 			}
 		}
 
 		// if player is jumping
 		else {
 
-			if(initJump == true){
+			if (initJump == true ) {
 
-					// calculate jump multipliers based on player direction
-					int xdir, zdir;
-					if (direction == PlayerDirection.northeast) {
-						xdir = 1;
-						zdir = 0;
+				tempJump = Vector2.ClampMagnitude(tapJump.swipeVector, jumpDistance);
 
-					}
-					else if (direction == PlayerDirection.northwest) {
-						xdir = 0;
-						zdir = 1;
+					
+				moveDir = new Vector3 (-1* tempJump.x, jumpHeight ,-1* tempJump.y); // change when facing is implemented
 
-					}
-					else if (direction == PlayerDirection.southeast) {
-						xdir = 0;
-						zdir = -1;
-
-					}
-					else{
-						xdir = -1;
-						zdir = 0;
-
-					}
-
-					// set jump vector
-					moveDir = new Vector3 (jumpDistance*xdir, jumpHeight, jumpDistance*zdir); // change when facing is implemented
-					initJump = false;
-				
+				moveDir = Quaternion.Euler (0, 45, 0) * moveDir; 
+				// set jump vector
+				initJump = false;
+			
 			}
 		}
 

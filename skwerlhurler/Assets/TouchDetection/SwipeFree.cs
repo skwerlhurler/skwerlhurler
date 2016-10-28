@@ -19,7 +19,7 @@ public class SwipeFree : MonoBehaviour {
 	void Update () 
 	{
 		
-		if (Input.touchCount > 0 && !tapJump.isJumping ) // if we have had a touch and the skwerl is not jumping
+		if (Input.touchCount == 1 && !tapJump.isJumping ) // if we have had a touch and the skwerl is not jumping
 		{
 			Touch touch = Input.touches [0];
 		
