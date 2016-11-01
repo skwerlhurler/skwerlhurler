@@ -5,10 +5,12 @@ public class SwipeFree : MonoBehaviour {
 
 	GameObject go;
 	TapJump tapJump;
+	PlayerMovement playerMovement;
 
 	void Start () {
 		go = GameObject.Find("Sphere"); 
 		tapJump = go.GetComponent<TapJump>();
+		playerMovement = go.GetComponent<PlayerMovement> ();
 	}
 
 	public float minSwipeDist; 
@@ -18,8 +20,7 @@ public class SwipeFree : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		
-		if (Input.touchCount == 1 && !tapJump.isJumping ) // if we have had a touch and the skwerl is not jumping
+		if (Input.touchCount == 1 && !tapJump.isJumping && (playerMovement.moveDir.x + playerMovement.moveDir.z == 0)) // if we have had a touch and the skwerl is not jumping
 		{
 			Touch touch = Input.touches [0];
 		

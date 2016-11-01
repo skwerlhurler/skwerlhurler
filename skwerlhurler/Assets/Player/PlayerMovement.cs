@@ -14,11 +14,13 @@ public class PlayerMovement : MonoBehaviour {
 	public PlayerDirection direction {set;get;}
 	private Vector2 temp = Vector2.zero;
 	private Vector2 tempJump = Vector2.zero;
-	private Vector3 moveDir = Vector3.zero; 
+	public Vector3 moveDir = Vector3.zero; 
 	private bool initJump = true;
 	GameObject go;
 	SwipeFree swipefree;
 	TapJump tapJump;
+	private float propX; 
+	private float propY;
 
 	void Start () {
 		go = GameObject.Find("Sphere"); 
@@ -50,6 +52,7 @@ public class PlayerMovement : MonoBehaviour {
 				temp = swipefree.swipeVector;
 				moveDir = new Vector3 (temp.x, 0, temp.y);
 
+
 				// If over max vector, set to max vector (sets maximum input speed)
 				if (Mathf.Abs (moveDir.x) > maxVector) {
 					if (moveDir.x > 0) {
@@ -67,6 +70,10 @@ public class PlayerMovement : MonoBehaviour {
 				}
 
 				moveDir = Quaternion.Euler (0, 45, 0) * moveDir; 
+
+				propX = Mathf.Abs(moveDir.x / moveDir.magnitude); // setting the proportions of the X & Y vector mag for 
+				propY = Mathf.Abs(moveDir.z / moveDir.magnitude); // decay later, this saves operations... i guess
+
 				moveDir *= speed;
 
 				// figure out player direction based on last swipe input
@@ -91,7 +98,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 
 		// Ground movement decay (annoying and ugly)
-		if (tapJump.isJumping == false) {
+		/*if (tapJump.isJumping == false) {
 			if (Mathf.Abs (moveDir.x) > 0 || Mathf.Abs (moveDir.z) > 0) {
 				if (moveDir.x < -1 * decayThreshold) {
 					moveDir.x += decayConstant;
@@ -112,8 +119,26 @@ public class PlayerMovement : MonoBehaviour {
 
 				//print (moveDir.x + " " + moveDir.z);
 			}
-		}
+		}*/
 
+		if (tapJump.isJumping == false) {
+			if (Mathf.Abs (moveDir.x) > 0 || Mathf.Abs (moveDir.z) > 0) {
+				if (moveDir.x < -1 * decayThreshold) {
+					moveDir.x += (propX * decayConstant);
+				} else if (moveDir.x > decayThreshold) {
+					moveDir.x -= (propX * decayConstant);
+				}
+				if (moveDir.z < -1 * decayThreshold) {
+					moveDir.z += (propY * decayConstant);
+				} else if (moveDir.z > decayThreshold) {
+					moveDir.z -= (propY * decayConstant);
+				}
+				if (Mathf.Abs (moveDir.x) < decayThreshold && Mathf.Abs (moveDir.z) < decayThreshold) {
+					moveDir.x = 0; moveDir.z = 0; 
+				}
+					
+			}
+		}
 		// if player is jumping
 		else {
 
