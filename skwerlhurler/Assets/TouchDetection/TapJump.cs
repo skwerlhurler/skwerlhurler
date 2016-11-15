@@ -44,7 +44,7 @@ public class TapJump : MonoBehaviour {
 				startPos = touch.position; 
 				break; 
 			case TouchPhase.Ended:
-				Vector2 PlayerSwipe = new Vector2 ((touch.position.x - startPos.x), (touch.position.y - startPos.y));
+				Vector2 PlayerSwipe = new Vector2 ((touch.position.x - Screen.width/2), (touch.position.y - Screen.height/2));
 				float swipeDistance = (PlayerSwipe.magnitude);
 
 				if (swipeDistance > minSwipeDist) { // if it meets the swipe distance that meets our threshold
@@ -56,8 +56,8 @@ public class TapJump : MonoBehaviour {
 			default:
 				// Arrow movement
 				currentPos = touch.position;
-				delta.x = startPos.x - currentPos.x;
-				delta.z = startPos.y - currentPos.y;
+				delta.x = Screen.width/2 - currentPos.x;
+				delta.z = Screen.height/2 - currentPos.y;
 				delta = Quaternion.Euler (0, 315, 0) * delta;
 				rotationVector = Quaternion.LookRotation (delta);
 				rotationVector *= facing;
