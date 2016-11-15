@@ -8,7 +8,9 @@ public class CameraController : MonoBehaviour {
 	public Vector3 velocity; 
 	public float inSize = 100f; 
 	public float outSize = 250f;
+	public float zoomSpeed = 5f; 
 	public bool  toggleZoom = false;
+
 
 	// Use this for initialization
 	void Start () 
@@ -31,15 +33,11 @@ public class CameraController : MonoBehaviour {
 	{
 		// Set the position of the camera's transform to be the same as the player's, but offset by the calculated offset distance.
 		if (toggleZoom) {
-			if (Camera.main.orthographicSize == inSize) {
-				Camera.main.orthographicSize = outSize;
-
-			} else {
-				Camera.main.orthographicSize = inSize;
-
-			}
-			toggleZoom = false;
+			GetComponent<Camera>().orthographicSize = Mathf.Lerp(GetComponent<Camera>().orthographicSize, outSize, Time.deltaTime * zoomSpeed);
+		} else{
+			GetComponent<Camera>().orthographicSize = Mathf.Lerp(GetComponent<Camera>().orthographicSize, inSize, Time.deltaTime * zoomSpeed);
 		} 
+
 		float posX = Mathf.SmoothDamp(transform.position.x, player.transform.position.x + offset.x, ref velocity.x, smoothTimeX); 
 		float posY = Mathf.SmoothDamp(transform.position.y, player.transform.position.y + offset.y, ref velocity.y, smoothTimeY);
 		float posZ = Mathf.SmoothDamp(transform.position.z, player.transform.position.z + offset.z, ref velocity.z, smoothTimeZ);
