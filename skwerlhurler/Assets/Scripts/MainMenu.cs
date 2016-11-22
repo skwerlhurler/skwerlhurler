@@ -4,19 +4,17 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour {
 
-	public string startLevel;
-	public string loadSelect;
+	public string loadLevel;
 	public string unloadLevel;
 	
-	
-	public void NewGame(){
-		SceneManager.LoadScene(startLevel);
+	public void LoadLevel(){
+		SceneManager.LoadScene(loadLevel);
 	}
 	
-	public void LoadGame(){
-		SceneManager.LoadScene(loadSelect);
+	public void UnloadLevel(){
+		SceneManager.LoadScene (unloadLevel);
 	}
-	
+
 	public void SelectLevel(string s){
 		SceneManager.LoadScene (s);
 	}

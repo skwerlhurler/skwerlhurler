@@ -17,7 +17,11 @@ public class JoyStickMovement : MonoBehaviour {
 	GameObject player;
 	GameObject temp;
 	JoyStick myjs; 
-	public bool isJumping; 
+	public bool isJumping;
+	public Sprite sprite1;
+	public Sprite sprite2;
+	public Sprite sprite3;
+	public Sprite sprite4;
 
 	void Start () {
 		player = GameObject.Find("Squirrel"); 
@@ -35,6 +39,8 @@ public class JoyStickMovement : MonoBehaviour {
 	void Update () {
 		CharacterController controller = player.GetComponent<CharacterController> (); 
 		Vector3 moveDir = myjs.InputDirection;
+
+		turnSkwerl (moveDir);
 
 		moveDir = Quaternion.Euler (0, 45, 0) * moveDir; 
 		moveDir *= speed;
@@ -56,5 +62,13 @@ public class JoyStickMovement : MonoBehaviour {
 
 	public void jump(){
 		isJumping = true;
+	}
+
+	void turnSkwerl(Vector3 dir){
+		SpriteRenderer skwerlSprite = GameObject.Find("Skwerl").GetComponent<SpriteRenderer>();
+		if (dir.x < 0 && dir.z > 0) skwerlSprite.sprite = sprite1;
+		if (dir.x < 0 && dir.z < 0) skwerlSprite.sprite = sprite3;
+		if (dir.x > 0 && dir.z > 0) skwerlSprite.sprite = sprite2;
+		if (dir.x > 0 && dir.z < 0) skwerlSprite.sprite = sprite4;
 	}
 }
