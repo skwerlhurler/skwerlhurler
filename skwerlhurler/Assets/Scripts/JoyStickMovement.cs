@@ -17,27 +17,37 @@ public class JoyStickMovement : MonoBehaviour {
 	GameObject player;
 	GameObject temp;
 	JoyStick myjs; 
+	public float y_movenent;
 	public bool isJumping;
+	public Rigidbody rb;
 	public Sprite sprite1;
 	public Sprite sprite2;
 	public Sprite sprite3;
 	public Sprite sprite4;
+	public CharacterController controller;
+	private float timeCount;
+	private float currentTimeCount;
 
 	void Start () {
 		player = GameObject.Find("Squirrel"); 
 		myjs = GameObject.Find ("JoyStickContainer").GetComponent<JoyStick>();
 		isJumping = false; 
+		rb = GetComponent<Rigidbody> ();
+		controller = player.GetComponent<CharacterController> (); 
 		//direction = PlayerDirection.southeast; // initialize direction to southeast
 	}
 
 	public float speed;
-	public float jumpHeight;
+	//public float jumpHeight;
 	public float gravity;
-	public float jumpforce;
+	//public float jumpforce;
+	//public float startHeight;
+	public float intercept; // Intercept of jump function, actually the square root of function's intercept
+	public float slope; // Slope of the jump function; should be small
 
 	// Update is called once per frame
 	void Update () {
-		CharacterController controller = player.GetComponent<CharacterController> (); 
+		
 		Vector3 moveDir = myjs.InputDirection;
 
 		turnSkwerl (moveDir);
@@ -46,22 +56,42 @@ public class JoyStickMovement : MonoBehaviour {
 		moveDir *= speed;
 
 		if (isJumping) {
+			Debug.Log (jumpFunction(timeCount));
 			
-			moveDir.y += (jumpforce); 
+			if(controller.isGrounded){
+				timeCount = intercept;
+			}
+
+			currentTimeCount = jumpFunction (timeCount);
+
+			moveDir.y += currentTimeCount;
+			timeCount--;
+
+			if (currentTimeCount <0) { //jumpFunction (timeCount) < -1* x_int
+				isJumping = false;
+			}
 
 		}
-		else{
-
-			moveDir.y -= (gravity);
-		}
 			
-		Debug.Log (moveDir.y);
+		if(!isJumping){
+			moveDir.y -= gravity;
+		}
+
+			
+		//Debug.Log (moveDir.y);
 		controller.Move (moveDir * Time.deltaTime);
 
 	}
 
 	public void jump(){
-		isJumping = true;
+		if (!isJumping) {
+			isJumping = true;
+		}
+
+	}
+
+	public float jumpFunction(float x){
+		return (-1*slope*x*x)+(intercept*intercept);
 	}
 
 	void turnSkwerl(Vector3 dir){
