@@ -29,11 +29,11 @@ public class JoyStickMovement : MonoBehaviour {
 	private float currentTimeCount;
 
 	void Start () {
-		player = GameObject.Find("Squirrel"); 
+		//player = GameObject.Find("Squirrel"); 
 		myjs = GameObject.Find ("JoyStickContainer").GetComponent<JoyStick>();
 		isJumping = false; 
 		rb = GetComponent<Rigidbody> ();
-		controller = player.GetComponent<CharacterController> (); 
+		//controller = player.GetComponent<CharacterController> (); 
 		//direction = PlayerDirection.southeast; // initialize direction to southeast
 	}
 
@@ -56,7 +56,7 @@ public class JoyStickMovement : MonoBehaviour {
 		moveDir *= speed;
 
 		if (isJumping) {
-			Debug.Log (jumpFunction(timeCount));
+			//Debug.Log (jumpFunction(timeCount));
 			
 			if(controller.isGrounded){
 				timeCount = intercept;
@@ -95,7 +95,7 @@ public class JoyStickMovement : MonoBehaviour {
 	}
 
 	void turnSkwerl(Vector3 dir){
-		SpriteRenderer skwerlSprite = GameObject.Find("Skwerl").GetComponent<SpriteRenderer>();
+		SpriteRenderer skwerlSprite = controller.gameObject.GetComponentInChildren<SpriteRenderer>();
 		if (dir.x < 0 && dir.z > 0) skwerlSprite.sprite = sprite1;
 		if (dir.x < 0 && dir.z < 0) skwerlSprite.sprite = sprite3;
 		if (dir.x > 0 && dir.z > 0) skwerlSprite.sprite = sprite2;
