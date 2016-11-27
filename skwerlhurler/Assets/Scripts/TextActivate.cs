@@ -26,7 +26,6 @@ public class TextActivate : MonoBehaviour {
 		}
 		if (textBox.activeSelf == false) {
 			textBox.SetActive (true);
-			//actualText.
 			actualText.text = message; 
 		}
 	}

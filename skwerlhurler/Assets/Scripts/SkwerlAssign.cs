@@ -5,14 +5,16 @@ using System.Collections.Generic;
 public class SkwerlAssign : MonoBehaviour {
 
 	public int obtained;
+	private int numOfSkwerls;
 	SkwerlCollect skwerl;
 	GameObject mainSkwerl;
-	public SkwerlCollect[] all;
+	SkwerlCollect[] all;
 
 	// Use this for initialization
 	void Start () {
-		obtained = 0;
-		mainSkwerl = GameObject.Find ("Squirrel");
+		numOfSkwerls = FindObjectsOfType (typeof(SkwerlCollect)).Length;
+		all = new SkwerlCollect[numOfSkwerls];
+		mainSkwerl = this.gameObject;
 	}
 
 	void OnTriggerEnter(Collider friend){
