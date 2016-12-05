@@ -1,4 +1,7 @@
 Base path: /Applications/Unity/Unity.app/Contents
 Cmd: getPlatforms
+<<<<<<< HEAD
 
 Quitting shader compiler process
+=======
+>>>>>>> 7ed01bd7378e23cbbb3d0d6aaa408a67b17529af
