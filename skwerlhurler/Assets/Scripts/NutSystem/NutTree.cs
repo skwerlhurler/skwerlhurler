@@ -20,7 +20,7 @@ public class NutTree : MonoBehaviour {
 	}
 
 	void check(){
-		if (nutsStoredInTree == nutsToWin) {
+		if (nutsStoredInTree >= nutsToWin) {
 			Debug.Log ("You Win");
 			skwerl.gameObject.SetActive (false);
 			Canvas uiMain = GameObject.Find ("UI").GetComponent<Canvas> ();

@@ -24,7 +24,7 @@ public class MovingPlatform : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		platform.GetComponent<Rigidbody>().MovePosition (platform.position + direction * platformSpeed * Time.fixedDeltaTime); 
+		platform.transform.position = (platform.position + direction * platformSpeed * Time.fixedDeltaTime); 
 		if (Vector3.Distance (platform.position, destination.position) < platformSpeed * Time.fixedDeltaTime) {
 			SetDestination (destination == startTransform ? endTransform : startTransform); 
 		}

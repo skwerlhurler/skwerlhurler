@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class CatsMovement : MonoBehaviour {
 
 	// Use this for initialization
-	private GameObject cat;
+	public GameObject cat {set;get;}
 	public GameObject skwerl;
 	public GameObject victim { set; get; }
 	private CharacterController catController;
@@ -22,6 +22,7 @@ public class CatsMovement : MonoBehaviour {
 	public Sprite sprite4;
 	//private Vector3 saveSkwerlPos;
 	private double recordTime;
+	public float gravity;
 
 	void Start () {
 		cat = this.gameObject;
@@ -31,37 +32,26 @@ public class CatsMovement : MonoBehaviour {
 		saveCatPos = cat.transform.position;
 		//saveSkwerlPos = skwerl.transform.position;
 		recordTime = 0;
+		Physics.IgnoreLayerCollision (10,12,true);
 	}
 
 	void OnTriggerExit(Collider character){
-		string temp = character.name;
-		if (temp.Equals("Squirrel") || temp.Equals("PatrolAreaTom")) {
+		SkwerlDie skwerls = character.GetComponent<SkwerlDie> ();
+		if (character.name.Equals("PatrolAreaTom")) {
 			victim = null;
 			isAttacking = false;
-			if (temp.Equals("PatrolAreaTom")){
+			if (character.name.Equals("PatrolAreaTom")){
 				goBack = true;
 			}
-		}
-	}
-
-	void OnCollisionEnter(Collision kill){
-		Debug.Log (kill);
-		if (kill.collider.name.Equals ("SkwerlKillBox")) {
-			Debug.Log ("Killed Squirrel");
-			isAttacking = false;
-			goBack = true;
-			skwerl.SetActive(false);
-			Canvas uiMain = GameObject.Find ("UI").GetComponent<Canvas>();
-			uiMain.enabled = false;
-			Canvas killScreen = GameObject.Find ("DeathScreen").GetComponent<Canvas> ();
-			killScreen.enabled = true;
 		}
 	}
 
 	void Update () {
 		if (isAttacking) {
 			goBack = false;
-			attack ();
+			if (victim != null) attack ();
+			if (victim == null)
+				goBack = true;
 		}
 		if (goBack) {
 			recordTime += (Time.smoothDeltaTime * 60)/100;
@@ -69,8 +59,10 @@ public class CatsMovement : MonoBehaviour {
 			if (recordTime > 2){
 				goBack = false;
 				cat.transform.position = saveCatPos;
-				SpriteRenderer skwerlSprite = catController.gameObject.GetComponentInChildren<SpriteRenderer>();
-				skwerlSprite.sprite = sprite4;
+				if (catController.gameObject.GetComponentInChildren<SpriteRenderer> ()) {
+					SpriteRenderer skwerlSprite = catController.gameObject.GetComponentInChildren<SpriteRenderer> ();
+					skwerlSprite.sprite = sprite4;
+				}
 				recordTime = 0;
 			}
 		}
@@ -81,10 +73,11 @@ public class CatsMovement : MonoBehaviour {
 		Vector3 victimPos = victim.transform.position;
 		Vector3 attack = victimPos - catPos;
 		turnSkwerl (attack);
-		attack.y = 0;
+		//attack.y = saveCatPos.y;
 		attack.Normalize();
 		attack *= speed;
 		//Debug.Log (attack);
+		attack.y += gravity;
 		catController.Move (attack);
 	}
 
@@ -97,10 +90,16 @@ public class CatsMovement : MonoBehaviour {
 	}
 
 	void turnSkwerl(Vector3 dir){
-		SpriteRenderer skwerlSprite = catController.gameObject.GetComponentInChildren<SpriteRenderer>();
-		if (dir.x < 0 && dir.z > 0) skwerlSprite.sprite = sprite1;
-		if (dir.x < 0 && dir.z < 0) skwerlSprite.sprite = sprite3;
-		if (dir.x > 0 && dir.z > 0) skwerlSprite.sprite = sprite2;
-		if (dir.x > 0 && dir.z < 0) skwerlSprite.sprite = sprite4;
+		if (catController.gameObject.GetComponentInChildren<SpriteRenderer> ()) {
+			SpriteRenderer skwerlSprite = catController.gameObject.GetComponentInChildren<SpriteRenderer> ();
+			if (dir.x < 0 && dir.z > 0)
+				skwerlSprite.sprite = sprite1;
+			if (dir.x < 0 && dir.z < 0)
+				skwerlSprite.sprite = sprite3;
+			if (dir.x > 0 && dir.z > 0)
+				skwerlSprite.sprite = sprite2;
+			if (dir.x > 0 && dir.z < 0)
+				skwerlSprite.sprite = sprite4;
+		}
 	}
 }

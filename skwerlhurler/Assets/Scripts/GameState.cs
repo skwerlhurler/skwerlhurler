@@ -6,8 +6,8 @@ public class GameState : MonoBehaviour {
 
 	NutTree tree;
 	Scene currentScene;
-	public static bool[] levels = new bool[3];
-	public GameObject[] buttons = new GameObject[3];
+	public static bool[] levels = new bool[4]; //set size to number of levels
+	public GameObject[] buttons = new GameObject[4]; //set size to number of levels
 
 	// Use this for initialization
 	void Start () {
@@ -32,6 +32,11 @@ public class GameState : MonoBehaviour {
 			if (currentScene.name.Equals ("LevelTwo")) {
 				Debug.Log ("Level Three Unlocked");
 				levels [2] = true;
+				allowToSelect ();
+			}
+			if (currentScene.name.Equals ("LevelThree")) {
+				Debug.Log ("Level Four Unlocked");
+				levels [3] = true;
 				allowToSelect ();
 			}
 		} else if (currentScene.name.Equals("MainMenu")){

@@ -8,7 +8,8 @@ public class SkwerlAssign : MonoBehaviour {
 	private int numOfSkwerls;
 	SkwerlCollect skwerl;
 	GameObject mainSkwerl;
-	SkwerlCollect[] all;
+	public SkwerlCollect[] all { set; get; }
+	public Queue<SkwerlCollect> skwerlQueue = new Queue<SkwerlCollect>();
 
 	// Use this for initialization
 	void Start () {
@@ -26,12 +27,32 @@ public class SkwerlAssign : MonoBehaviour {
 					skwerl.squirrelToFollow = mainSkwerl;
 				else if (obtained > 0)
 					skwerl.squirrelToFollow = all[obtained - 1].gameObject;
+				skwerlQueue.Enqueue (skwerl);
 				all[obtained] = skwerl;
 				obtained += 1;
 				//skwerl.id = obtained;
 			}
 		}
 
+	}
+
+	public void reorder(){
+		numOfSkwerls = FindObjectsOfType (typeof(SkwerlCollect)).Length;
+		all = new SkwerlCollect[numOfSkwerls];
+		if (skwerlQueue.Count != 0) {
+			SkwerlCollect[] temp = skwerlQueue.ToArray ();
+			for (int i = 0; i < numOfSkwerls; i++) {
+				if (i < temp.Length){
+					if (i == 0)
+						temp [i].squirrelToFollow = mainSkwerl;
+					else
+						temp [i].squirrelToFollow = temp [i - 1].gameObject;
+					all [i] = temp [i];
+				}
+				else
+					all [i] = null;
+			}
+		}
 	}
 
 }

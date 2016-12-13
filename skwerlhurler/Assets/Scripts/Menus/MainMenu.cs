@@ -18,4 +18,8 @@ public class MainMenu : MonoBehaviour {
 	public void SelectLevel(string s){
 		SceneManager.LoadScene (s);
 	}
+
+	public void ReloadLevel(){
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+	}
 }
