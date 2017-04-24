@@ -36,7 +36,6 @@ public class CatsMovement : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider character){
-		SkwerlDie skwerls = character.GetComponent<SkwerlDie> ();
 		if (character.name.Equals("PatrolAreaTom")) {
 			victim = null;
 			isAttacking = false;
@@ -92,14 +91,22 @@ public class CatsMovement : MonoBehaviour {
 	void turnSkwerl(Vector3 dir){
 		if (catController.gameObject.GetComponentInChildren<SpriteRenderer> ()) {
 			SpriteRenderer skwerlSprite = catController.gameObject.GetComponentInChildren<SpriteRenderer> ();
-			if (dir.x < 0 && dir.z > 0)
+			if (dir.x < 0 && dir.z > 0) {
+				//cat.transform.Rotate (0, 0, 180); //Would like to rotate in the future
 				skwerlSprite.sprite = sprite1;
-			if (dir.x < 0 && dir.z < 0)
+			}
+			if (dir.x < 0 && dir.z < 0) {
+				//cat.transform.Rotate (0, 0, 270);
 				skwerlSprite.sprite = sprite3;
-			if (dir.x > 0 && dir.z > 0)
+			}
+			if (dir.x > 0 && dir.z > 0) {
+				//cat.transform.Rotate (0, 0, 0);
 				skwerlSprite.sprite = sprite2;
-			if (dir.x > 0 && dir.z < 0)
+			}
+			if (dir.x > 0 && dir.z < 0) {
+				//cat.transform.Rotate (0, 0, 90);
 				skwerlSprite.sprite = sprite4;
+			}
 		}
 	}
 }

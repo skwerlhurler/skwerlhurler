@@ -58,7 +58,7 @@ public class JoyStickMovement : MonoBehaviour {
 
 		if (!isJumping && lifeRaft == null)
 			moveDir.y += gravity;
-		else if (!isJumping && !lifeRaft.onRaft)
+		else if (!isJumping)
 			moveDir.y += gravity;
 
 		if (controller.isGrounded)
@@ -73,12 +73,14 @@ public class JoyStickMovement : MonoBehaviour {
 			x_const = x_const + flowRate;
 			moveDir.y *= jumpForce;
 
+			if (lifeRaft != null && moveDir.y < 0) {
+				lifeRaft.onRaft = false;
+				Physics.IgnoreLayerCollision (9, 12, false);
+				Physics.IgnoreLayerCollision (9, 4, false);
+			}
+
 			// Jump until parameters are met
 			if (controller.isGrounded && x_const > 0) {
-				if (lifeRaft != null && lifeRaft.onRaft) {
-					lifeRaft.onRaft = false;
-					Physics.IgnoreLayerCollision (9, 12, false);
-				}
 				landSound.Play ();
 				isJumping = false;
 				x_const = -30;
@@ -86,19 +88,23 @@ public class JoyStickMovement : MonoBehaviour {
 
 		}
 
-//		if (isFalling) {
-//			moveDir.x /= airResistance;
-//			moveDir.z /= airResistance;
-//		}
-
 		controller.Move (moveDir * Time.deltaTime);
 
 	}
 
 	public void jump(AudioSource jumpSound){
 		if (!isJumping) {
-			isJumping = true;
-			jumpSound.Play ();
+			if (lifeRaft != null && lifeRaft.onRaft) {
+				isJumping = true;
+				lifeRaft.onRaft = false;
+				jumpSound.Play ();
+				this.GetComponent<CharacterController> ().slopeLimit = 60;
+				Physics.IgnoreLayerCollision (9, 12, true);
+				Physics.IgnoreLayerCollision (9, 4, true);
+			} else if (lifeRaft == null || !lifeRaft.onRaft) {
+				isJumping = true;
+				jumpSound.Play ();
+			}
 		}
 	}
 

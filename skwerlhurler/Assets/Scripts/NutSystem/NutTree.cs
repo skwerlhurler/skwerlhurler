@@ -4,25 +4,26 @@ using System.Collections;
 
 public class NutTree : MonoBehaviour {
 
-	public NutSystem skwerl;
+	public NutSystem ns;
 	public int nutsStoredInTree;
 	public int nutsToWin;
-	public Text display;
 	public bool isCompleted;
+	public AudioSource winSound;
 
 	void OnTriggerEnter(Collider giver){
 		if(giver.name.Equals("Squirrel")){
-			nutsStoredInTree += skwerl.nutsObtained;
-			skwerl.nutsObtained = 0;
-			display.text = "Number of Acorns: " + nutsStoredInTree;
-			check ();
+			nutsStoredInTree += ns.nutsObtained;
+			ns.nutsObtained = 0;
+			check (giver);
 		}
 	}
 
-	void check(){
+	void check(Collider giver){
 		if (nutsStoredInTree >= nutsToWin) {
 			Debug.Log ("You Win");
-			skwerl.gameObject.SetActive (false);
+			//In the future we should stop LevelMusic here
+			winSound.Play ();
+			giver.gameObject.SetActive (false);
 			Canvas uiMain = GameObject.Find ("UI").GetComponent<Canvas> ();
 			uiMain.enabled = false;
 			Canvas winScreen = GameObject.Find ("WinScreen").GetComponent<Canvas> ();

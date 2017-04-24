@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class Ani : MonoBehaviour {
-	Animator anim;
-	CatsMovement cat;
+	public Animator anim;
+	public CatsMovement cat;
 	
 	// Use this for initialization
 	void Start () {
@@ -12,7 +12,7 @@ public class Ani : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		Vector3 catPos = cat.cat.transform.position;
 		if (cat.victim != null){
 			catPos = cat.cat.transform.position;

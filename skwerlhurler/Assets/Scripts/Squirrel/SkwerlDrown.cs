@@ -5,13 +5,11 @@ public class SkwerlDrown : MonoBehaviour {
 
 	public GameObject skwerl;
 	GameObject ob;
-	JoyStickMovement jsm;
 	LifeRaft lifeRaft;
 	public Animator anim;
 	Animator skwerlanim;
 
 	void Start(){
-		jsm = skwerl.GetComponent<JoyStickMovement> ();
 		skwerlanim = GameObject.Find ("Skwerl").GetComponent<Animator>();
 		if (GameObject.Find("Liferaft"))
 			lifeRaft = GameObject.Find ("Liferaft").GetComponent<LifeRaft> ();

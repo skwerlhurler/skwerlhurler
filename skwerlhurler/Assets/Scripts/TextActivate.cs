@@ -7,25 +7,22 @@ public class TextActivate : MonoBehaviour {
 	public GameObject textBox;
 	public Text actualText;
 	public TextAsset file;
+	public Animator textAnim;
 	private string message;
 
 	void Start(){
-		//actualText = textBox.GetComponent<Text> ();
-		textBox.SetActive (false);
 		message = "Nothing was loaded";
 	}
 
 	void OnTriggerEnter(Collider character){
 		if (character.name.Equals("Squirrel")) {
 			message = file.text;
-			if (textBox.activeSelf == false) {
-				textBox.SetActive (true);
-				actualText.text = message; 
-			}
+			textAnim.SetBool ("isTalking",true);
+			actualText.text = message; 
 		}
 	}
 
 	void OnTriggerExit(){
-		if(textBox.activeSelf == true) textBox.SetActive (false);
+		textAnim.SetBool ("isTalking",false);
 	}
 }

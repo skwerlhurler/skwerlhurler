@@ -97,9 +97,10 @@ public class SkwerlCollect : MonoBehaviour {
 					path = leadPos - followPos;
 					path *= speed;
 					if (!fscontrol.isGrounded) {
+						//Must do more experimentation here
 						//path.y = 1;  //Doing this and making gravity negative
 						//path.y *= speed;  //Keeps them grounded
-						path.y *= gravity;
+						//path.y += gravity;
 					}
 					turnSkwerl (joy);
 				}
@@ -110,7 +111,7 @@ public class SkwerlCollect : MonoBehaviour {
 						//path.y = leadPos.y - followPos.y;
 						turnSkwerl (path);
 						path.y *= speed;
-						path.y *= -gravity;
+						path.y *= gravity;
 					} else if (fscontrol.isGrounded) {
 						path *= 0;
 					}
@@ -120,7 +121,6 @@ public class SkwerlCollect : MonoBehaviour {
 			}
 
 			if (isThrown && !needsToReset) {
-				
 				waitTime += 1;
 				float tf = thrower.throwForce;
 				Vector3 mom = thrower.copyThrow;
@@ -132,10 +132,9 @@ public class SkwerlCollect : MonoBehaviour {
 				}
 				if (fscontrol.isGrounded) {
 					fscontrol.SimpleMove(new Vector3(0,0,0));
-					if (waitTime > 75 && !isAttacked) {
-						
+					if (waitTime > 75) {
+						//use !isAttacked here to wait for cat to kill squirrel
 						disappear ();
-						//Destroy (followSquirrel);
 					}
 				}
 			}
@@ -182,6 +181,7 @@ public class SkwerlCollect : MonoBehaviour {
 	public void resetSkwerl(){
 		followSquirrel.transform.position = startPos;
 		followSquirrel.GetComponentInChildren<SpriteRenderer> ().enabled = true;
+		isAttacked = false;
 		isThrown = false;
 		isCollected = false;
 		needsToReset = false;

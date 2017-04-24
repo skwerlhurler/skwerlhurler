@@ -2,53 +2,44 @@
 using System.Collections;
 
 public class LifeRaft : MonoBehaviour {
-
-
-	public bool onRaft { set; get; }
-	public JoyStickMovement skwerl;
-	public CharacterController swim { set; get;}
-	public JoyStick joyStick;
-	public CharacterController resetCont { set; get; }
-
+	
+	public bool onRaft;
+	public float slopeLimit;
+	public GameObject skwerl;
+	public bool fromRaft { set; get; }
+	JoyStickMovement skwerlJsm;
+	public AudioSource jumpSound;
+	float reset;
 	// Use this for initialization
 	void Start () {
 		onRaft = false;
-		swim = this.GetComponentInParent<CharacterController> ();
-		resetCont = skwerl.GetComponent<CharacterController> ();
+		fromRaft = false;
+		skwerlJsm = skwerl.GetComponent<JoyStickMovement> ();
+		reset = skwerlJsm.gravity;
 	}
 		
 	void OnTriggerEnter(Collider passenger){
-		if (passenger.name.Equals ("Squirrel")) {
-				passenger.transform.parent = gameObject.transform;
-				skwerl.enabled = false;
-				onRaft = true;
-				swim.enabled = true;
-				Physics.IgnoreLayerCollision (9, 12, true);
-				Physics.IgnoreLayerCollision (9,4, true);
-		}
-	}
-
-	public void leaveRaft(){
-		if (onRaft == true) {
-			skwerl.enabled = true;
-			swim.enabled = true;
-			//lifeRaft.onRaft = false;
-			gameObject.transform.parent = null;
+		if (passenger.name.Equals ("Squirrel") && !onRaft) {
+			//The code below catches the skwerl and places him in the raft
+			passenger.gameObject.transform.position = this.transform.position;
+			skwerl.GetComponent<Rigidbody> ().velocity.Equals(Vector3.zero);
+			skwerlJsm.isJumping = false;
+			skwerlJsm.gravity = 0;
+			skwerlJsm.x_const = -30;
+			onRaft = true;
+			//Let's not fall through water
 			Physics.IgnoreLayerCollision (9, 4, false);
-		}
+			//Now edit controller values
+			skwerlJsm.GetComponent<CharacterController>().slopeLimit = slopeLimit;
+		} 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-		if (onRaft && !skwerl.isJumping) {
-			skwerl.transform.position = this.gameObject.transform.position;
-			Vector3 moveDir = joyStick.InputDirection;
-			moveDir = Quaternion.Euler (0, 45, 0) * moveDir; 
-			moveDir *= skwerl.speed;
-			moveDir.y += skwerl.gravity;
-			swim.Move (moveDir * Time.smoothDeltaTime);
-		}
-	
+		if (onRaft && !skwerlJsm.isJumping) {
+			//Update position
+			this.transform.position = skwerl.transform.position;
+			skwerlJsm.gravity = reset;
+		} 
 	}
 }
